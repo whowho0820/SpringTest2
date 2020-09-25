@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yi.mapper.BoardMapper">
+
+<sql id="criteria">
+	<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+		<foreach item="type" collection="typeArr">
+				<trim prefix="OR">
+				<choose>
+					<when test="type =='T'.toString()">
+					name like CONCAT('%',#{keyword},'%')
+					</when>
+					<when test="type == 'C'.toString()">
+					address like CONCAT('%',#{keyword},'%')
+					</when>
+					<when test="type =='W'.toString()">
+					age like CONCAT('%',#{keyword},'%')
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+	</trim>
+</sql>
+
+
+	<select id="getList" resultType="com.yi.domain.BoardVO">
+	<![CDATA[
+		select*from member where mid > 0
+		]]>
+	</select>
+
+	<delete id="delete">
+		delete from member where mid=#{mid}
+	</delete>
+
+	<update id="update">
+		update member set name=#{name}, age=#{age}, address=#{address}, sphone=#{sphone} where mid=#{mid} 
+	</update>
+
+	<insert id="insert">
+		insert into member (name, age, address, sphone)
+		values (#{name}, #{age}, #{address}, #{sphone})
+	</insert>
+	
+	<select id="read" resultType="com.yi.domain.BoardVO" >
+		select * from member where mid=#{mid}
+	</select>
+
+ 	<!--<select id="getListWithPaging" resultType="com.yi.domain.BoardVO">
+		SELECT *
+		FROM member
+		WHERE mid > 0
+		ORDER BY mid
+		LIMIT #{startPage}, #{recordsPerPage}
+	</select> -->
+	
+	 <select id="getListWithPaging" resultType="com.yi.domain.BoardVO">
+		<![CDATA[
+		SELECT
+		mid,
+		name,
+		age,
+		address,
+		sphone
+		FROM member
+		WHERE 
+		]]>
+		<include refid="criteria"></include>
+		
+		<![CDATA[
+		
+		mid > 0
+		ORDER BY mid DESC, address DESC
+		LIMIT #{startPage}, #{recordsPerPage}
+		]]>
+	</select> 
+	
+	<select id="getTotalCount" resultType="int">
+		SELECT count(*)
+		FROM member
+		WHERE 
+		<include refid="criteria"></include>
+		
+		mid > 0
+	</select> 
+	
+<!-- 	<insert id="insertSelectKey">
+
+		insert into member (age, address, sphone)
+		values (#{age}, #{address}, #{sphone}) where mid=#{mid}
+	</insert> -->
+	
+</mapper>	

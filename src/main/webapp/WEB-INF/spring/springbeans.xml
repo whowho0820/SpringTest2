@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+        
+    <!-- properties file 정보 -->    
+ <!--   <context:property-placeholder 
+        location="classpath:properties/values.properties"  />
+      -->   
+    <!-- @Component @Value @Autowired 어노테이션을 선언한 클래스들을 스캐닝을 하기 위한 설정     -->
+    <context:component-scan base-package="com.yi.hellotest" />
+        
+    <!-- StringPrinter 클래스를 bean으로 등록-->
+    <bean id="stringPrinter" class="com.yi.hellotest.StringPrinter" />
+    
+    <!-- ConsolPrinter 클래스를 bean으로 등록 -->
+    <bean id="consolePrinter" class="com.yi.hellotest.ConsolePrinter" />
+    
+    <!-- Hello 클래스를 bean으로 등록 첫번째방법 -->
+    <bean id="helloPrinter" class="com.yi.hellotest.Hello" >
+        <!-- setter injection 설정 -->
+        <property name="name" value ="조성훈"/>
+        <property name="printer" ref ="stringPrinter"/>
+    </bean>
+    
+    <!-- Hello 클래스를 bean으로 등록 두번째방법 -->
+    <bean id="helloC" class="com.yi.hellotest.Hello" >
+        <!-- constructor injection 설정 -->
+        <constructor-arg index="0" value="${name}"/>
+        <constructor-arg index="1" ref="consolePrinter"/>
+   <!--      
+        <property name="names">
+            <list>
+                <value>${value1}</value>
+                <value>${value2}</value>
+                <value>${value3}</value>
+            </list>
+        </property> 
+   -->
+    </bean>
+    
+</beans>
